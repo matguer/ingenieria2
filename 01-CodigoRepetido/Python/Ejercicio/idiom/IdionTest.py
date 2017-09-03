@@ -133,11 +133,11 @@ class IdionTest(unittest.TestCase):
         try:
             tryBlock()
             fail()
-        except anError as e:
-            self.assertEquals(e[0], aMessage)
+        except anError as exception:
+            self.assertEquals(exception.message, aMessage)
             catchBlock()
         else:
-            raise e
+            raise exception
 
 
 if __name__ == "__main__":
