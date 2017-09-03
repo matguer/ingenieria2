@@ -47,24 +47,53 @@ class CustomerBook:
 
 class IdionTest(unittest.TestCase):
     def testAddingCustomerShouldNotTakeMoreThan50Milliseconds(self):
-        customerBook = CustomerBook()
+        # customerBook = CustomerBook()
 
-        timeBeforeRunning = time.time()
-        customerBook.addCustomerNamed('John Lennon')
-        timeAfterRunning = time.time()
+        # timeBeforeRunning = time.time()
+        # customerBook.addCustomerNamed('John Lennon')
+        # timeAfterRunning = time.time()
 
-        self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 50)
+        # self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 50)
+
+        self.assertOperationTimeLessThan(self.addCustomerOperation, 50)
 
     def testRemovingCustomerShouldNotTakeMoreThan100Milliseconds(self):
+        # customerBook = CustomerBook()
+        # paulMcCartney = 'Paul McCartney'
+        
+        # customerBook.addCustomerNamed(paulMcCartney)
+        # timeBeforeRunning = time.time()
+        # customerBook.removeCustomerNamed(paulMcCartney)
+        # timeAfterRunning = time.time()
+
+        # self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 100)
+
+        self.assertOperationTimeLessThan(self.removeCustomerOperation, 100)
+
+    def addCustomerOperation(self):
+        customerBook = CustomerBook()
+        customerBook.addCustomerNamed('John Lennon')
+
+    def removeCustomerOperation(self):
         customerBook = CustomerBook()
         paulMcCartney = 'Paul McCartney'
-        
         customerBook.addCustomerNamed(paulMcCartney)
-        timeBeforeRunning = time.time()
         customerBook.removeCustomerNamed(paulMcCartney)
-        timeAfterRunning = time.time()
 
-        self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 100)
+    def assertOperationTimeLessThan(self, operationToBeMeasured, limitTime):
+        operationTime = self.measureOperationTime(operationToBeMeasured)
+        self.assertTimeLessThan(operationTime, limitTime)
+
+    def assertTimeLessThan(self, timeToTest, limitTime):
+        self.assertTrue(timeToTest < limitTime)
+
+    def measureOperationTime(self, operationToBeMeasured):
+        timeBeforeRunning = time.time()
+        operationToBeMeasured()
+        timeAfterRunning = time.time()
+        return (timeAfterRunning - timeBeforeRunning) * 1000
+
+
 
     def testCanNotAddACustomerWithEmptyName(self):
         customerBook = CustomerBook()
