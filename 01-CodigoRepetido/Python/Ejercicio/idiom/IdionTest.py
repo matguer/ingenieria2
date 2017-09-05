@@ -105,7 +105,7 @@ class IdionTest(unittest.TestCase):
         def assertEmptyBook():
             self.assertTrue(customerBook.isEmpty())
 
-        self.tryCatch(addEmptyCustomer, ValueError, CustomerBook.CUSTOMER_NAME_CAN_NOT_BE_EMPTY, assertEmptyBook)
+        self.assertErrorCaseFail(addEmptyCustomer, ValueError, CustomerBook.CUSTOMER_NAME_CAN_NOT_BE_EMPTY, assertEmptyBook)
 
 
     def testCanNotRemoveNotAddedCustomer(self):
@@ -126,16 +126,16 @@ class IdionTest(unittest.TestCase):
             self.assertTrue(customerBook.numberOfCustomers()==1)
             self.assertTrue(customerBook.includesCustomerNamed('Paul McCartney'))
 
-        self.tryCatch(removeCustomerJohn, KeyError, CustomerBook.INVALID_CUSTOMER_NAME, assertOneCustomerPaul)
+        self.assertErrorCaseFail(removeCustomerJohn, KeyError, CustomerBook.INVALID_CUSTOMER_NAME, assertOneCustomerPaul)
 
 
-    def tryCatch(self, tryBlock, anError, aMessage, catchBlock):
+    def assertErrorCaseFail(self, errorCaseBlock, expectedError, expectedErrorMessage, changesWereNotAppliedAssertionBlock):
         try:
-            tryBlock()
+            errorCaseBlock()
             fail()
-        except anError as exception:
-            self.assertEquals(exception.message, aMessage)
-            catchBlock()
+        except expectedError as exception:
+            self.assertEquals(exception.message, expectedErrorMessage)
+            changesWereNotAppliedAssertionBlock()
         else:
             raise exception
 
