@@ -47,12 +47,6 @@ class CustomerBook:
 
 class IdionTest(unittest.TestCase):
     def testAddingCustomerShouldNotTakeMoreThan50Milliseconds(self):
-
-        # timeBeforeRunning = time.time()
-        # customerBook.addCustomerNamed('John Lennon')
-        # timeAfterRunning = time.time()
-
-        # self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 50)
         customerBook = CustomerBook()
 
         def addCustomerOperation():
@@ -61,15 +55,10 @@ class IdionTest(unittest.TestCase):
         self.assertOperationTimeLessThan(addCustomerOperation, 50)
 
     def testRemovingCustomerShouldNotTakeMoreThan100Milliseconds(self):
-        # timeBeforeRunning = time.time()
-        # customerBook.removeCustomerNamed(paulMcCartney)
-        # timeAfterRunning = time.time()
-
-        # self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 100)
         customerBook = CustomerBook()
         paulMcCartney = 'Paul McCartney'
-
         customerBook.addCustomerNamed(paulMcCartney)
+
         def removeCustomerOperation():
             customerBook.removeCustomerNamed(paulMcCartney)
 
@@ -91,12 +80,6 @@ class IdionTest(unittest.TestCase):
 
 
     def testCanNotAddACustomerWithEmptyName(self):
-        #try:
-        #    customerBook.addCustomerNamed('')
-        #    self.fail()
-        #except ValueError as exception:
-        #    self.assertEquals(exception.message,CustomerBook.CUSTOMER_NAME_CAN_NOT_BE_EMPTY)
-        #    self.assertTrue(customerBook.isEmpty())
         customerBook = CustomerBook()
 
         def addEmptyCustomer():
@@ -109,13 +92,6 @@ class IdionTest(unittest.TestCase):
 
 
     def testCanNotRemoveNotAddedCustomer(self):
-        #try:
-        #    customerBook.removeCustomerNamed('John Lennon')
-        #    self.fail()
-        #except KeyError as exception:
-        #    self.assertEquals(exception.message,CustomerBook.INVALID_CUSTOMER_NAME)
-        #    self.assertTrue(customerBook.numberOfCustomers()==1)
-        #    self.assertTrue(customerBook.includesCustomerNamed('Paul McCartney'))
         customerBook = CustomerBook()
         customerBook.addCustomerNamed('Paul McCartney')
 
