@@ -47,12 +47,6 @@ class CustomerBook:
 
 class IdionTest(unittest.TestCase):
     def testAddingCustomerShouldNotTakeMoreThan50Milliseconds(self):
-
-        # timeBeforeRunning = time.time()
-        # customerBook.addCustomerNamed('John Lennon')
-        # timeAfterRunning = time.time()
-
-        # self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 50)
         customerBook = CustomerBook()
 
         def addCustomerOperation():
@@ -61,15 +55,10 @@ class IdionTest(unittest.TestCase):
         self.assertOperationTimeLessThan(addCustomerOperation, 50)
 
     def testRemovingCustomerShouldNotTakeMoreThan100Milliseconds(self):
-        # timeBeforeRunning = time.time()
-        # customerBook.removeCustomerNamed(paulMcCartney)
-        # timeAfterRunning = time.time()
-
-        # self.assertTrue((timeAfterRunning - timeBeforeRunning) * 1000 < 100)
         customerBook = CustomerBook()
         paulMcCartney = 'Paul McCartney'
-
         customerBook.addCustomerNamed(paulMcCartney)
+
         def removeCustomerOperation():
             customerBook.removeCustomerNamed(paulMcCartney)
 
@@ -91,12 +80,6 @@ class IdionTest(unittest.TestCase):
 
 
     def testCanNotAddACustomerWithEmptyName(self):
-        #try:
-        #    customerBook.addCustomerNamed('')
-        #    self.fail()
-        #except ValueError as exception:
-        #    self.assertEquals(exception.message,CustomerBook.CUSTOMER_NAME_CAN_NOT_BE_EMPTY)
-        #    self.assertTrue(customerBook.isEmpty())
         customerBook = CustomerBook()
 
         def addEmptyCustomer():
@@ -105,17 +88,10 @@ class IdionTest(unittest.TestCase):
         def assertEmptyBook():
             self.assertTrue(customerBook.isEmpty())
 
-        self.tryCatch(addEmptyCustomer, ValueError, CustomerBook.CUSTOMER_NAME_CAN_NOT_BE_EMPTY, assertEmptyBook)
+        self.assertErrorCaseFail(addEmptyCustomer, ValueError, CustomerBook.CUSTOMER_NAME_CAN_NOT_BE_EMPTY, assertEmptyBook)
 
 
     def testCanNotRemoveNotAddedCustomer(self):
-        #try:
-        #    customerBook.removeCustomerNamed('John Lennon')
-        #    self.fail()
-        #except KeyError as exception:
-        #    self.assertEquals(exception.message,CustomerBook.INVALID_CUSTOMER_NAME)
-        #    self.assertTrue(customerBook.numberOfCustomers()==1)
-        #    self.assertTrue(customerBook.includesCustomerNamed('Paul McCartney'))
         customerBook = CustomerBook()
         customerBook.addCustomerNamed('Paul McCartney')
 
@@ -126,18 +102,18 @@ class IdionTest(unittest.TestCase):
             self.assertTrue(customerBook.numberOfCustomers()==1)
             self.assertTrue(customerBook.includesCustomerNamed('Paul McCartney'))
 
-        self.tryCatch(removeCustomerJohn, KeyError, CustomerBook.INVALID_CUSTOMER_NAME, assertOneCustomerPaul)
+        self.assertErrorCaseFail(removeCustomerJohn, KeyError, CustomerBook.INVALID_CUSTOMER_NAME, assertOneCustomerPaul)
 
 
-    def tryCatch(self, tryBlock, anError, aMessage, catchBlock):
+    def assertErrorCaseFail(self, errorCaseBlock, expectedError, expectedErrorMessage, changesWereNotAppliedAssertionBlock):
         try:
-            tryBlock()
+            errorCaseBlock()
             fail()
-        except anError as e:
-            self.assertEquals(e[0], aMessage)
-            catchBlock()
+        except expectedError as exception:
+            self.assertEquals(exception.message, expectedErrorMessage)
+            changesWereNotAppliedAssertionBlock()
         else:
-            raise e
+            raise exception
 
 
 if __name__ == "__main__":
