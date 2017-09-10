@@ -207,10 +207,38 @@ Object subclass: #Numero
 
 	self subclassResponsibility ! !
 
+!Numero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:30:37'!
+addEntero: anEntero
+
+	self subclassResponsibility ! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:31:01'!
+addFraccion: aFraccion
+
+	self subclassResponsibility ! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 11:30:29'!
+dividesAFraccion: aFraccion
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 11:30:11'!
+dividesAnEntero: anEntero
+	self subclassResponsibility.! !
+
 !Numero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 22:48'!
 invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:39:59'!
+multiplyByEntero: anEntero
+
+	self subclassResponsibility ! !
+
+!Numero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:40:46'!
+multiplyByFraccion: aFraccion
+
+	self subclassResponsibility ! !
 
 
 !Numero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 22:49'!
@@ -222,7 +250,6 @@ isOne
 isZero
 
 	self subclassResponsibility ! !
-
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -246,6 +273,10 @@ Numero subclass: #Entero
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numero-Exercise'!
+
+!Entero methodsFor: 'value' stamp: 'MG 9/10/2017 11:30:29'!
+dividesAFraccion: aFraccion
+	^ aFraccion numerator / (self * aFraccion denominator).! !
 
 !Entero methodsFor: 'value' stamp: 'HernanWilkinson 5/7/2016 21:02'!
 integerValue
@@ -283,33 +314,67 @@ initalizeWith: aValue
 	value := aValue! !
 
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:45:04'!
 * aMultiplier 
 	
-	^self class with: value * aMultiplier integerValue
+	^aMultiplier multiplyByEntero: self.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:33:07'!
 + anAdder 
 	
-	^self class with: value + anAdder integerValue
+	^anAdder addEntero: self
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
-/ aDivisor 
-	
-	^Fraccion with: self over: aDivisor! !
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 11:30:11'!
+/ aDivisor
+	^ aDivisor dividesAnEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:55'!
 // aDivisor 
 	
 	^self class with: value // aDivisor integerValue! !
 
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:26:57'!
+addEntero: anEntero
+	
+	^self class with: value + anEntero integerValue
+! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:37:39'!
+addFraccion: aFraccion
+	
+	| newNumerator newDenominator |
+	
+	newNumerator := (aFraccion numerator) + (aFraccion denominator * self value).
+	newDenominator := aFraccion denominator.
+	
+	^newNumerator / newDenominator 
+! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 11:30:11'!
+dividesAnEntero: anEntero
+	^ Fraccion
+		with: anEntero
+		over: self.! !
+
 !Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 21:00'!
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
 
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:41:40'!
+multiplyByEntero: anEntero
+	
+	^self class with: value * anEntero integerValue
+	! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:43:33'!
+multiplyByFraccion: aFraccion
+	
+	^(aFraccion numerator * self value) / (aFraccion denominator)
+	
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -366,27 +431,61 @@ hash
 	^(numerator hash / denominator hash) hash! !
 
 
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:44:42'!
 * aMultiplier 
 	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	^aMultiplier multiplyByFraccion: self.
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:32:52'!
 + anAdder 
+	
+	^anAdder addFraccion: self! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 11:30:29'!
+/ aDivisor
+	^ aDivisor dividesAFraccion: self.! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:46:21'!
+addEntero: anEntero
 	
 	| newNumerator newDenominator |
 	
-	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-	newDenominator := denominator * anAdder denominator.
+	newNumerator := (numerator) + (denominator * anEntero).
+	newDenominator := denominator.
+	
+	^newNumerator / newDenominator 
+	! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:32:24'!
+addFraccion: aFraccion
+	
+	| newNumerator newDenominator |
+	
+	newNumerator := (numerator * aFraccion denominator) + (denominator * aFraccion numerator).
+	newDenominator := denominator * aFraccion denominator.
 	
 	^newNumerator / newDenominator ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
-/ aDivisor 
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 11:30:29'!
+dividesAFraccion: aFraccion
+	^ denominator * aFraccion numerator / (numerator * aFraccion denominator).! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 11:30:11'!
+dividesAnEntero: anEntero
+	^ denominator * anEntero / numerator.! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:46:37'!
+multiplyByEntero: anEntero
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	^(numerator * anEntero) / (denominator)
+	! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MG 9/10/2017 10:41:17'!
+multiplyByFraccion: aFraccion
+	
+	^(numerator * aFraccion numerator) / (denominator * aFraccion denominator)
+	! !
 
 
 !Fraccion methodsFor: 'accessing' stamp: 'HernanWilkinson 5/7/2016 21:56'!
