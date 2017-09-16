@@ -137,26 +137,6 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 ! !
 
 
-!classDefinition: #NullStackItem category: #'Stack-Exercise'!
-Object subclass: #NullStackItem
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Stack-Exercise'!
-
-!NullStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:02:07'!
-isEmpty
-	^true.! !
-
-!NullStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:07:51'!
-itemValue
-	^self error: 'Stack is empty'.! !
-
-!NullStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:51:59'!
-next
-	^self error: 'Stack is empty'.! !
-
-
 !classDefinition: #OOStack category: #'Stack-Exercise'!
 Object subclass: #OOStack
 	instanceVariableNames: 'top size'
@@ -174,22 +154,23 @@ init
 isEmpty
 	^ top isEmpty.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:06:27'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MG 9/16/2017 16:51:39'!
 pop
-	| anItem popedItem |
-	popedItem := self topItem .
-	anItem := popedItem next.
+	| anItem poppedItem |
+	poppedItem := self topItem .
+	anItem := poppedItem next.
 	self top: anItem.
 	size := size - 1.
-	^ popedItem itemValue.! !
+	^ poppedItem itemValue.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:55:37'!
-push: aString 
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MG 9/16/2017 16:52:14'!
+push: anItemValue
 	| aStackItem |
-	aStackItem := StackItem init: aString next: (self topItem).
+	aStackItem _ FilledStackItem
+		init: anItemValue
+		next: self topItem.
 	self top: aStackItem.
-	size := size + 1.
-	^ self.! !
+	size _ size + 1.! !
 
 !OOStack methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:47:25'!
 size
@@ -225,41 +206,81 @@ stackEmptyErrorDescription
 
 !classDefinition: #StackItem category: #'Stack-Exercise'!
 Object subclass: #StackItem
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!StackItem methodsFor: 'as yet unclassified' stamp: 'MG 9/16/2017 16:43:02'!
+isEmpty
+	^self subclassResponsibility ! !
+
+!StackItem methodsFor: 'as yet unclassified' stamp: 'MG 9/16/2017 16:43:09'!
+itemValue
+	^self subclassResponsibility ! !
+
+!StackItem methodsFor: 'as yet unclassified' stamp: 'MG 9/16/2017 16:43:17'!
+next
+	^self subclassResponsibility ! !
+
+
+!classDefinition: #FilledStackItem category: #'Stack-Exercise'!
+StackItem subclass: #FilledStackItem
 	instanceVariableNames: 'next itemValue'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!StackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:02:34'!
+!FilledStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:02:34'!
 isEmpty
 	^false.! !
 
-!StackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:04:29'!
+!FilledStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:04:29'!
 itemValue
 	^ itemValue.! !
 
-!StackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:04:43'!
+!FilledStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:04:43'!
 itemValue: aString 
 	itemValue := aString.! !
 
-!StackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:40:37'!
+!FilledStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:40:37'!
 next
 	^next.! !
 
-!StackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:37:16'!
+!FilledStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:37:16'!
 next: anItem 
 	next := anItem.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'StackItem class' category: #'Stack-Exercise'!
-StackItem class
+!classDefinition: 'FilledStackItem class' category: #'Stack-Exercise'!
+FilledStackItem class
 	instanceVariableNames: ''!
 
-!StackItem class methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:05:27'!
+!FilledStackItem class methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:05:27'!
 init: aString next: anItem
 	| newInstance |
 	newInstance := super new.
 	newInstance itemValue: aString.
 	newInstance next: anItem.
 	^ newInstance.! !
+
+
+!classDefinition: #NullStackItem category: #'Stack-Exercise'!
+StackItem subclass: #NullStackItem
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!NullStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:02:07'!
+isEmpty
+	^true.! !
+
+!NullStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:07:51'!
+itemValue
+	^self error: 'Stack is empty'.! !
+
+!NullStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:51:59'!
+next
+	^self error: 'Stack is empty'.! !
