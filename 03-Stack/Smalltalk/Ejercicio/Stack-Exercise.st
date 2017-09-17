@@ -239,9 +239,9 @@ isEmpty
 itemValue
 	^ itemValue.! !
 
-!FilledStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:04:43'!
-itemValue: aString 
-	itemValue := aString.! !
+!FilledStackItem methodsFor: 'as yet unclassified' stamp: 'MG 9/17/2017 10:19:13'!
+itemValue: anItemValue 
+	itemValue := anItemValue.! !
 
 !FilledStackItem methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 01:40:37'!
 next
@@ -257,11 +257,11 @@ next: anItem
 FilledStackItem class
 	instanceVariableNames: ''!
 
-!FilledStackItem class methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/16/2017 02:05:27'!
-init: aString next: anItem
+!FilledStackItem class methodsFor: 'as yet unclassified' stamp: 'MG 9/17/2017 10:18:45'!
+init: anItemValue next: anItem
 	| newInstance |
 	newInstance := super new.
-	newInstance itemValue: aString.
+	newInstance itemValue: anItemValue.
 	newInstance next: anItem.
 	^ newInstance.! !
 
