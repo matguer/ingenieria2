@@ -2,16 +2,16 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 
 	self subclassResponsibility ! !!AccountTransaction methodsFor: 'evaluating' stamp: 'HernanWilkinson 7/14/2011 06:48'!value
 
-	self subclassResponsibility ! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!AccountTransaction class	instanceVariableNames: ''!!AccountTransaction class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:38'!register: aValue on: account
+	self subclassResponsibility ! !!AccountTransaction methodsFor: 'evaluating' stamp: 'Guerson 9/27/2017 00:34'!transferNet: aBalance	^ aBalance .! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!AccountTransaction class	instanceVariableNames: ''!!AccountTransaction class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:38'!register: aValue on: account
 
 	| withdraw |
 
 	withdraw := self for: aValue.
 	account register: withdraw.
 
-	^ withdraw! !AccountTransaction subclass: #CertificateOfDeposit	instanceVariableNames: 'value tna numberOfDays account'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:05'!updateBalance: aBalance
+	^ withdraw! !Object subclass: #AccountTransferAdapter	instanceVariableNames: 'adaptee'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!AccountTransferAdapter methodsFor: 'initialization' stamp: 'Guerson 9/27/2017 00:36'!transferNet 		| transferBalance |	transferBalance := 0 .	adaptee transactions do: [ :transaction | transferBalance := transaction transferNet: transferBalance  ] .	^ transferBalance .! !!AccountTransferAdapter methodsFor: 'initialization' stamp: 'Guerson 9/27/2017 00:28'!initializeFor: aReceptiveAccount	adaptee := aReceptiveAccount .! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!AccountTransferAdapter class	instanceVariableNames: ''!!AccountTransferAdapter class methodsFor: 'instance creation' stamp: 'Guerson 9/27/2017 00:28'!for: aReceptiveAccount	^ self new initializeFor: aReceptiveAccount .! !AccountTransaction subclass: #CertificateOfDeposit	instanceVariableNames: 'value tna numberOfDays account'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/27/2017 01:35'!initialValue	^ value .! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:15'!accountSummaryLines	^'Plazo fijo por ', value asString , ' durante ', numberOfDays asString , ' dias a una tna de ', (tna * 100) asString , '%'.! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/27/2017 01:19'!earnings	^ value * ((tna/360) * numberOfDays) .! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/27/2017 01:32'!updateBalance: aBalance
 
-	^ aBalance - value.! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:10'!initializeFor: aValue during: aNumberOfDays at: aTna	value := aValue .	numberOfDays := aNumberOfDays .	tna := aTna .! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:15'!accountSummaryLines	^'Plazo fijo por ', value asString , ' durante ', numberOfDays asString , ' dias a una tna de ', (tna * 100) asString , '%'.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!CertificateOfDeposit class	instanceVariableNames: ''!!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'Guerson 9/26/2017 23:11'!register: aValue during: aNumberOfDays at: aTna on: anAccount		| certificateOfDeposit |
+	^ aBalance - value.! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:10'!initializeFor: aValue during: aNumberOfDays at: aTna	value := aValue .	numberOfDays := aNumberOfDays .	tna := aTna .! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!CertificateOfDeposit class	instanceVariableNames: ''!!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'Guerson 9/26/2017 23:11'!register: aValue during: aNumberOfDays at: aTna on: anAccount		| certificateOfDeposit |
 
 	certificateOfDeposit := self for: aValue during: aNumberOfDays at: aTna .
 	anAccount register: certificateOfDeposit.
@@ -34,46 +34,34 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 
 	^ withdraw! !!Deposit class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:38'!for: aValue
 
-	^ self new initializeFor: aValue ! !TestCase subclass: #PortfolioTest	instanceVariableNames: ''	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!portofolioTreeOf: aPortfolio namingAccountWith: aDictionary
+	^ self new initializeFor: aValue ! !Object subclass: #InvestmentAccountDecorator	instanceVariableNames: 'decoratee'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!InvestmentAccountDecorator methodsFor: 'transactions' stamp: 'Guerson 9/27/2017 01:20'!transactions	^ decoratee transactions 		select: [ :aTransaction | (aTransaction isKindOf: CertificateOfDeposit) ] .! !!InvestmentAccountDecorator methodsFor: 'transactions' stamp: 'Guerson 9/27/2017 01:16'!balance 	| sumBalance |	sumBalance := 0 .	self transactions do: [ :aTransaction | sumBalance := aTransaction updateBalance: sumBalance ] .	^ sumBalance .! !!InvestmentAccountDecorator methodsFor: 'transactions' stamp: 'Guerson 9/27/2017 01:21'!earnings 	| sumEarnings |	sumEarnings := 0 .	self transactions do: [ :aTransaction | sumEarnings := sumEarnings + aTransaction earnings ] .	^ sumEarnings .! !!InvestmentAccountDecorator methodsFor: 'transactions' stamp: 'Guerson 9/27/2017 01:35'!initialValue 	| sumAmount |	sumAmount := 0 .	self transactions do: [ :aTransaction | sumAmount := sumAmount + aTransaction initialValue ] .	^ sumAmount .! !!InvestmentAccountDecorator methodsFor: 'instance creation' stamp: 'Guerson 9/27/2017 01:16'!initializeFor: aReceptiveAccount	decoratee := aReceptiveAccount .! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!InvestmentAccountDecorator class	instanceVariableNames: ''!!InvestmentAccountDecorator class methodsFor: 'instance creation' stamp: 'Guerson 9/27/2017 01:16'!for: aReceptiveAccount	^ self new initializeFor: aReceptiveAccount .! !TestCase subclass: #PortfolioTest	instanceVariableNames: ''	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!portofolioTreeOf: aPortfolio namingAccountWith: aDictionary
 
-	self shouldBeImplemented ! !!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!investmentEarningsOf: aReceptiveAccount
+	self shouldBeImplemented ! !!PortfolioTest methodsFor: 'test support' stamp: 'Guerson 9/27/2017 01:22'!investmentEarningsOf: aReceptiveAccount
 
-	self shouldBeImplemented ! !!PortfolioTest methodsFor: 'test support' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLinesOf: aReceptiveAccount
+	| decorator |	decorator := InvestmentAccountDecorator for: aReceptiveAccount .	^ decorator earnings .! !!PortfolioTest methodsFor: 'test support' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLinesOf: aReceptiveAccount
 
 	| lines |
 	lines := OrderedCollection new.
 	(aReceptiveAccount transactions) do: [ :aTransaction | lines add: aTransaction accountSummaryLines].
-	^ lines.! !!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!accountTransferNetOf: aReceptiveAccount
+	^ lines.! !!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!reversePortofolioTreeOf: aPortfolio namingAccountWith: aDictionary
 
-	self shouldBeImplemented ! !!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!investmentNetOf: aReceptiveAccount
+	self shouldBeImplemented ! !!PortfolioTest methodsFor: 'test support' stamp: 'Guerson 9/27/2017 01:11'!accountTransferNetOf: aReceptiveAccount
 
-	self shouldBeImplemented ! !!PortfolioTest methodsFor: 'test support' stamp: 'HernanWilkinson 9/6/2016 19:43'!reversePortofolioTreeOf: aPortfolio namingAccountWith: aDictionary
+	| decorator |	decorator := TransferNetAccountDecorator for: aReceptiveAccount .	^ decorator balance .! !!PortfolioTest methodsFor: 'test support' stamp: 'Guerson 9/27/2017 01:33'!investmentNetOf: aReceptiveAccount
 
-	self shouldBeImplemented ! !!PortfolioTest methodsFor: 'tests' stamp: 'HernanWilkinson 9/26/2011 16:29'!test28PortfolioTreePrinterPrintsTheCompositeInDepthFirstOrder
+	| decorator |	decorator := InvestmentAccountDecorator for: aReceptiveAccount .	^ decorator initialValue .! !!PortfolioTest methodsFor: 'tests' stamp: 'Guerson 9/27/2017 01:31'!test24CertificateOfDepositShouldWithdrawInvestmentValue
 
-	| account1 account2 account3 complexPortfolio composedPortfolio accountNames lines |
+	| account toAccount |
+	account := ReceptiveAccount new.
+	toAccount := ReceptiveAccount new.
 
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	account3 := ReceptiveAccount new.
-	complexPortfolio := Portfolio with: account1 with: account2.
-	composedPortfolio := Portfolio with: complexPortfolio with: account3.
+	Deposit register: 1000 on: account.
+	Withdraw register: 50 on: account.
+	Transfer register: 100 from: account to: toAccount.
+	CertificateOfDeposit register: 100 during: 30 at: 1/10 on: account.
 
-	accountNames := Dictionary new.
-	accountNames at: composedPortfolio put: 'composedPortfolio'.
-	accountNames at: complexPortfolio put: 'complexPortfolio'.
-	accountNames at: account1 put: 'account1'.
-	accountNames at: account2 put: 'account2'.
-	accountNames at: account3 put: 'account3'.
-
-	lines := self portofolioTreeOf: composedPortfolio namingAccountWith: accountNames.
-
-	self assert: 5 = lines size.
-	self assert: 'composedPortfolio' = (lines at: 1).
-	self assert: ' complexPortfolio' = (lines at: 2).
-	self assert: '  account1' = (lines at: 3).
-	self assert: '  account2' = (lines at: 4).
-	self assert: ' account3' = (lines at: 5).! !!PortfolioTest methodsFor: 'tests' stamp: 'HernanWilkinson 7/13/2011 19:02'!test12PortfolioManagesComposedAccounts
+	self assert: 100 =(self investmentNetOf:account).
+	self assert: 750 = account balance.! !!PortfolioTest methodsFor: 'tests' stamp: 'HernanWilkinson 7/13/2011 19:02'!test12PortfolioManagesComposedAccounts
 
 	| account1 account2 account3 complexPortfolio |
 	account1 := ReceptiveAccount new.
@@ -113,7 +101,7 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 	self assert: (composedPortfolio transactions includes: deposit1).
 	self assert: (composedPortfolio transactions includes: deposit2).
 	self assert: (composedPortfolio transactions includes: deposit3).
-! !!PortfolioTest methodsFor: 'tests' stamp: 'HernanWilkinson 7/14/2011 06:58'!test25ShouldBeAbleToQueryInvestmentEarnings
+! !!PortfolioTest methodsFor: 'tests' stamp: 'Guerson 9/27/2017 01:18'!test25ShouldBeAbleToQueryInvestmentEarnings
 
 	| account investmentEarnings |
 	account := ReceptiveAccount new.
@@ -402,19 +390,31 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 
  	self assert: (composedPortfolio registers: deposit1).
 	self assert: (composedPortfolio registers: deposit2).
-	self assert: (composedPortfolio registers: deposit3).! !!PortfolioTest methodsFor: 'tests' stamp: 'HernanWilkinson 7/14/2011 06:58'!test24CertificateOfDepositShouldWithdrawInvestmentValue
+	self assert: (composedPortfolio registers: deposit3).! !!PortfolioTest methodsFor: 'tests' stamp: 'HernanWilkinson 9/26/2011 16:29'!test28PortfolioTreePrinterPrintsTheCompositeInDepthFirstOrder
 
-	| account toAccount |
-	account := ReceptiveAccount new.
-	toAccount := ReceptiveAccount new.
+	| account1 account2 account3 complexPortfolio composedPortfolio accountNames lines |
 
-	Deposit register: 1000 on: account.
-	Withdraw register: 50 on: account.
-	Transfer register: 100 from: account to: toAccount.
-	CertificateOfDeposit register: 100 during: 30 at: 1/10 on: account.
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	account3 := ReceptiveAccount new.
+	complexPortfolio := Portfolio with: account1 with: account2.
+	composedPortfolio := Portfolio with: complexPortfolio with: account3.
 
-	self assert: 100 =(self investmentNetOf:account).
-	self assert: 750 = account balance.! !Object subclass: #SummarizingAccount	instanceVariableNames: ''	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!SummarizingAccount methodsFor: 'testing' stamp: 'HernanWilkinson 7/13/2011 18:34'!manages: anAccount
+	accountNames := Dictionary new.
+	accountNames at: composedPortfolio put: 'composedPortfolio'.
+	accountNames at: complexPortfolio put: 'complexPortfolio'.
+	accountNames at: account1 put: 'account1'.
+	accountNames at: account2 put: 'account2'.
+	accountNames at: account3 put: 'account3'.
+
+	lines := self portofolioTreeOf: composedPortfolio namingAccountWith: accountNames.
+
+	self assert: 5 = lines size.
+	self assert: 'composedPortfolio' = (lines at: 1).
+	self assert: ' complexPortfolio' = (lines at: 2).
+	self assert: '  account1' = (lines at: 3).
+	self assert: '  account2' = (lines at: 4).
+	self assert: ' account3' = (lines at: 5).! !Object subclass: #SummarizingAccount	instanceVariableNames: ''	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!SummarizingAccount methodsFor: 'testing' stamp: 'HernanWilkinson 7/13/2011 18:34'!manages: anAccount
 
 	self subclassResponsibility ! !!SummarizingAccount methodsFor: 'testing' stamp: 'HernanWilkinson 7/13/2011 18:34'!registers: aTransaction
 
@@ -484,18 +484,16 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 ! !!ReceptiveAccount methodsFor: 'testing' stamp: 'HernanWilkinson 7/13/2011 18:37'!registers: aTtransaction
 
 	^ transactions includes: aTtransaction
-! !Object subclass: #Transfer	instanceVariableNames: 'value sourceAccount targetAccount'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!Transfer methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/25/2017 21:24:19'!initializeFor: aValue
+! !Object subclass: #Transfer	instanceVariableNames: 'value sourceAccount targetAccount transferWithdrawLeg transferDepositLeg'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!Transfer methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:34'!initializeWith: aTransferWithdrawLeg and: aTransferDepositLeg	transferWithdrawLeg := aTransferWithdrawLeg .	transferDepositLeg := aTransferDepositLeg .! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!Transfer class	instanceVariableNames: ''!!Transfer class methodsFor: 'as yet unclassified' stamp: 'Guerson 9/26/2017 23:35'!register: anAmount from: aSourceAccount to: aDestinationAccount 
+	| transfer transferWithdrawLeg transferDepositLeg |		transfer := self new .		transferWithdrawLeg := TransferWithdraw register: anAmount on: aSourceAccount asPartOf: transfer .	
+	transferDepositLeg := TransferDeposit register: anAmount on: aDestinationAccount asPartOf: transfer .	transfer initializeWith: transferWithdrawLeg and: transferDepositLeg . 	^ transfer .! !AccountTransaction subclass: #TransferDeposit	instanceVariableNames: 'value transfer'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferDeposit methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:23'!updateBalance: aBalance
 
-	value := aValue ! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!Transfer class	instanceVariableNames: 'transferDepositLeg transferWithdrawLeg'!!Transfer class methodsFor: 'as yet unclassified' stamp: 'Guerson 9/26/2017 21:22'!register: anAmount from: aSourceAccount to: aDestinationAccount 
-	| transfer |		transfer := self new .		transferWithdrawLeg := TransferWithdraw register: anAmount on: aSourceAccount asPartOf: transfer .	
-	transferDepositLeg := TransferDeposit register: anAmount on: aDestinationAccount asPartOf: transfer .	^ transfer .! !AccountTransaction subclass: #TransferDeposit	instanceVariableNames: 'value transfer'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferDeposit methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:23'!updateBalance: aBalance
-
-	^ aBalance + value.! !!TransferDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:00'!initializeFor: aValue asPartOf: aTransfer 
+	^ aBalance + value.! !!TransferDeposit methodsFor: 'evaluating' stamp: 'Guerson 9/27/2017 00:35'!transferNet: aBalance	^ self updateBalance: aBalance .! !!TransferDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:00'!initializeFor: aValue asPartOf: aTransfer 
 
 	value := aValue .	transfer := aTransfer .! !!TransferDeposit methodsFor: 'value' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLines
 
  ^'Transferencia por ', self value asString.! !!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/25/2017 21:32:09'!value
-	^ value.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!TransferDeposit class	instanceVariableNames: 'transfer'!!TransferDeposit class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 22:59'!for: aValue asPartOf: aTransfer .
+	^ value.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!TransferDeposit class	instanceVariableNames: ''!!TransferDeposit class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 22:59'!for: aValue asPartOf: aTransfer .
 
 	^ self new initializeFor: aValue asPartOf: aTransfer .! !!TransferDeposit class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 22:59'!register: aValue on: account asPartOf: aTransfer
 
@@ -503,9 +501,9 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 	transferDeposit := self for: aValue asPartOf: aTransfer .
 	account register: transferDeposit .
 
-	^ transferDeposit .! !AccountTransaction subclass: #TransferWithdraw	instanceVariableNames: 'value transfer'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferWithdraw methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:22'!updateBalance: aBalance
+	^ transferDeposit .! !Object subclass: #TransferNetAccountDecorator	instanceVariableNames: 'decoratee'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferNetAccountDecorator methodsFor: 'instance creation' stamp: 'Guerson 9/27/2017 01:01'!initializeFor: aReceptiveAccount	decoratee := aReceptiveAccount .! !!TransferNetAccountDecorator methodsFor: 'transactions' stamp: 'Guerson 9/27/2017 01:16'!transactions	^ decoratee transactions 		select: [ :aTransaction | (aTransaction isKindOf: TransferDeposit) or: (aTransaction isKindOf: TransferWithdraw) ] .! !!TransferNetAccountDecorator methodsFor: 'transactions' stamp: 'Guerson 9/27/2017 01:15'!balance 	| sumBalance |	sumBalance := 0 .	self transactions do: [ :aTransaction | sumBalance := aTransaction updateBalance: sumBalance ] .	^ sumBalance .! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!TransferNetAccountDecorator class	instanceVariableNames: ''!!TransferNetAccountDecorator class methodsFor: 'instance creation' stamp: 'Guerson 9/27/2017 01:01'!for: aReceptiveAccount	^ self new initializeFor: aReceptiveAccount .! !AccountTransaction subclass: #TransferWithdraw	instanceVariableNames: 'value transfer'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferWithdraw methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:22'!updateBalance: aBalance
 
-	^ aBalance - value.! !!TransferWithdraw methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 22:58'!initializeFor: aValue asPartOf: aTransfer 
+	^ aBalance - value.! !!TransferWithdraw methodsFor: 'evaluating' stamp: 'Guerson 9/27/2017 00:35'!transferNet: aBalance	^ self updateBalance: aBalance .! !!TransferWithdraw methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 22:58'!initializeFor: aValue asPartOf: aTransfer 
 
 	value := aValue .	transfer := aTransfer .! !!TransferWithdraw methodsFor: 'value' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLines
 
