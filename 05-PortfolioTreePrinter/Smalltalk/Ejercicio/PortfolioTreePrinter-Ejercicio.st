@@ -9,7 +9,15 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 	withdraw := self for: aValue.
 	account register: withdraw.
 
-	^ withdraw! !AccountTransaction subclass: #CertificateOfDeposit	instanceVariableNames: 'value tna numberOfDays account'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!AccountTransaction subclass: #Deposit	instanceVariableNames: 'value'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!Deposit methodsFor: 'initialization' stamp: 'gs/mg 9/25/2017 20:45:44'!updateBalance: aBalance
+	^ withdraw! !AccountTransaction subclass: #CertificateOfDeposit	instanceVariableNames: 'value tna numberOfDays account'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:05'!updateBalance: aBalance
+
+	^ aBalance - value.! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:10'!initializeFor: aValue during: aNumberOfDays at: aTna	value := aValue .	numberOfDays := aNumberOfDays .	tna := aTna .! !!CertificateOfDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:15'!accountSummaryLines	^'Plazo fijo por ', value asString , ' durante ', numberOfDays asString , ' dias a una tna de ', (tna * 100) asString , '%'.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!CertificateOfDeposit class	instanceVariableNames: ''!!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'Guerson 9/26/2017 23:11'!register: aValue during: aNumberOfDays at: aTna on: anAccount		| certificateOfDeposit |
+
+	certificateOfDeposit := self for: aValue during: aNumberOfDays at: aTna .
+	anAccount register: certificateOfDeposit.
+
+	^ certificateOfDeposit! !!CertificateOfDeposit class methodsFor: 'as yet unclassified' stamp: 'Guerson 9/26/2017 23:11'!for: aValue during: aNumberOfDays at: aTna
+	^ self new initializeFor: aValue during: aNumberOfDays at: aTna .! !AccountTransaction subclass: #Deposit	instanceVariableNames: 'value'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!Deposit methodsFor: 'initialization' stamp: 'gs/mg 9/25/2017 20:45:44'!updateBalance: aBalance
 
 	^ aBalance + value.! !!Deposit methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:45'!initializeFor: aValue
 
@@ -480,37 +488,35 @@ Object subclass: #AccountTransaction	instanceVariableNames: ''	classVariableNa
 
 	value := aValue ! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!Transfer class	instanceVariableNames: 'transferDepositLeg transferWithdrawLeg'!!Transfer class methodsFor: 'as yet unclassified' stamp: 'Guerson 9/26/2017 21:22'!register: anAmount from: aSourceAccount to: aDestinationAccount 
 	| transfer |		transfer := self new .		transferWithdrawLeg := TransferWithdraw register: anAmount on: aSourceAccount asPartOf: transfer .	
-	transferDepositLeg := TransferDeposit register: anAmount on: aDestinationAccount asPartOf: transfer .	^ transfer .! !AccountTransaction subclass: #TransferDeposit	instanceVariableNames: 'value'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferDeposit methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:23'!updateBalance: aBalance
+	transferDepositLeg := TransferDeposit register: anAmount on: aDestinationAccount asPartOf: transfer .	^ transfer .! !AccountTransaction subclass: #TransferDeposit	instanceVariableNames: 'value transfer'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferDeposit methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:23'!updateBalance: aBalance
 
-	^ aBalance + value.! !!TransferDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 21:08'!initializeFor: aValue
+	^ aBalance + value.! !!TransferDeposit methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 23:00'!initializeFor: aValue asPartOf: aTransfer 
 
-	value := aValue ! !!TransferDeposit methodsFor: 'value' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLines
+	value := aValue .	transfer := aTransfer .! !!TransferDeposit methodsFor: 'value' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLines
 
  ^'Transferencia por ', self value asString.! !!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/25/2017 21:32:09'!value
-	^ value.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!TransferDeposit class	instanceVariableNames: 'transfer'!!TransferDeposit class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 21:07'!for: aValue
+	^ value.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!TransferDeposit class	instanceVariableNames: 'transfer'!!TransferDeposit class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 22:59'!for: aValue asPartOf: aTransfer .
 
-	^ self new initializeFor: aValue ! !!TransferDeposit class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 21:12'!register: aValue on: account asPartOf: aTransfer
+	^ self new initializeFor: aValue asPartOf: aTransfer .! !!TransferDeposit class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 22:59'!register: aValue on: account asPartOf: aTransfer
 
-	| transferDeposit |
-	transfer := aTransfer .	
-	transferDeposit := self for: aValue.
+	| transferDeposit |	
+	transferDeposit := self for: aValue asPartOf: aTransfer .
 	account register: transferDeposit .
 
-	^ transferDeposit .! !AccountTransaction subclass: #TransferWithdraw	instanceVariableNames: 'value'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferWithdraw methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:22'!updateBalance: aBalance
+	^ transferDeposit .! !AccountTransaction subclass: #TransferWithdraw	instanceVariableNames: 'value transfer'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!TransferWithdraw methodsFor: 'evaluating' stamp: 'Guerson 9/26/2017 21:22'!updateBalance: aBalance
 
-	^ aBalance - value.! !!TransferWithdraw methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 21:08'!initializeFor: aValue
+	^ aBalance - value.! !!TransferWithdraw methodsFor: 'initialization' stamp: 'Guerson 9/26/2017 22:58'!initializeFor: aValue asPartOf: aTransfer 
 
-	value := aValue ! !!TransferWithdraw methodsFor: 'value' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLines
+	value := aValue .	transfer := aTransfer .! !!TransferWithdraw methodsFor: 'value' stamp: 'Guerson 9/26/2017 21:25'!accountSummaryLines
 
  ^'Transferencia por -', self value asString.! !!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'gs/mg 9/25/2017 21:32:20'!value
 
-	^ value.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!TransferWithdraw class	instanceVariableNames: 'transfer'!!TransferWithdraw class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 21:06'!for: aValue
+	^ value.! !"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!TransferWithdraw class	instanceVariableNames: ''!!TransferWithdraw class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 22:57'!for: aValue asPartOf: aTransfer .
 
-	^ self new initializeFor: aValue ! !!TransferWithdraw class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 21:12'!register: aValue on: account asPartOf: aTransfer
+	^ self new initializeFor: aValue asPartOf: aTransfer .! !!TransferWithdraw class methodsFor: 'instance creation' stamp: 'Guerson 9/26/2017 22:56'!register: aValue on: account asPartOf: aTransfer
 
-	| transferWithdraw |
-	transfer := aTransfer .	
-	transferWithdraw := self for: aValue.
+	| transferWithdraw |	
+	transferWithdraw := self for: aValue asPartOf: aTransfer .
 	account register: transferWithdraw .
 
 	^ transferWithdraw .! !AccountTransaction subclass: #Withdraw	instanceVariableNames: 'value'	classVariableNames: ''	poolDictionaries: ''	category: 'PortfolioTreePrinter-Ejercicio'!!Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/14/2011 05:54'!value
